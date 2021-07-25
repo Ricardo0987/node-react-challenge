@@ -12,6 +12,7 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import { CONFIG } from "../../config";
+import Spinner from "../misc/Spinner";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -39,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SignIn() {
   const classes = useStyles();
   let history = useHistory();
+  const [isPendingData, setPendingData] = useState(false);
 
   const [data, setData] = useState({
     user: "",
@@ -55,9 +57,10 @@ export default function SignIn() {
       setError(true);
       setHelperText("This field can not empty");
     } else {
+      setPendingData(true);
       axios
         .post(
-          CONFIG.HOST + "/api/v1/signin",
+          CONFIG.HOST + "/api/v1/users/login",
           {
             email: data.user,
             password: data.password,
@@ -70,12 +73,16 @@ export default function SignIn() {
         )
         .then(function (response) {
           setToken(response.data.token);
+          history.push("/product-list");
         })
         .catch(function (error) {
           if (error.response) {
             setError(true);
-            setHelperText(error.response.data.error);
+            setHelperText(error.response.data);
           }
+        })
+        .then(function () {
+          setPendingData(false);
         });
     }
   };
@@ -95,6 +102,7 @@ export default function SignIn() {
   };
   return (
     <Container component="main" maxWidth="xs">
+      {isPendingData && <Spinner />}
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
