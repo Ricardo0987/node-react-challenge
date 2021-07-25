@@ -12,6 +12,10 @@ import Container from "@material-ui/core/Container";
 import { useHistory } from "react-router-dom";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
+import axios from "axios";
+import { CONFIG } from "../../config";
+import Swal from "sweetalert2";
+import Spinner from "../misc/Spinner";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -39,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SignUp() {
   const classes = useStyles();
   let history = useHistory();
+  const [isPendingData, setPendingData] = useState(false);
 
   const [data, setData] = useState({
     fullName: "",
@@ -51,6 +56,40 @@ export default function SignUp() {
 
   const handlerSubmitButton = (e) => {
     e.preventDefault();
+    if (!data.fullName.trim() || !data.email.trim() || !data.password.trim()) {
+      setError(true);
+      setHelperText("This field can not empty");
+    } else {
+      setPendingData(true);
+      axios
+        .post(CONFIG.HOST + "/api/v1/users/create", {
+          full_name: data.fullName,
+          email: data.email,
+          password: data.password,
+        })
+        .then(function () {
+          Swal.fire({
+            icon: "success",
+            title: "User create successfully",
+            confirmButtonText: `Go Sign In`,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              history.push("/signin");
+            }
+          });
+        })
+        .catch(function (error) {
+          console.log(error.response);
+          if (error.response) {
+            let errorMsg = error.response.data.message;
+            setError(true);
+            setHelperText(errorMsg);
+          }
+        })
+        .then(function () {
+          setPendingData(false);
+        });
+    }
   };
 
   const handleInputChange = (event) => {
@@ -69,6 +108,7 @@ export default function SignUp() {
 
   return (
     <Container component="main" maxWidth="xs">
+      {isPendingData && <Spinner />}
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
