@@ -1,5 +1,4 @@
-import { Schema, Document, model, Types } from 'mongoose';
-import { User } from './user';
+import { Schema, Document, model } from "mongoose";
 
 interface Product extends Document {
   name: string;
@@ -15,6 +14,6 @@ const schema = new Schema({
   description: String,
 });
 
-const Products = model<Product>('product', schema);
+const Products = model<Product>("product", schema);
 
 export default Products;
