@@ -57,7 +57,7 @@ export default function SignIn() {
     } else {
       axios
         .post(
-          CONFIG.HOST + "/api/login",
+          CONFIG.HOST + "/api/v1/signin",
           {
             email: data.user,
             password: data.password,
