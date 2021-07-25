@@ -8,7 +8,7 @@ import ProductList from "./products/ProductList.js";
 
 const layoutStyles = makeStyles((theme) => ({
   container: {
-    marginTop: 50,
+    marginTop: 80,
   },
 }));
 
