@@ -5,7 +5,7 @@ import productRouter from './product-router';
 
 const createRoutesV1 = (app: Application): void => {
   app.use('/api/v1/users', userRouter);
-  // app.use('/api/v1/products', productRouter);
+  app.use('/api/v1/products', productRouter);
 };
 
 export default createRoutesV1;
