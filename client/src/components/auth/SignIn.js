@@ -117,7 +117,6 @@ export default function SignIn() {
             label="User"
             name="user"
             autoFocus
-            data-testid="user"
           />
           <TextField
             onChange={handleInputChange}
@@ -128,7 +127,6 @@ export default function SignIn() {
             name="password"
             label="Password"
             type="password"
-            data-testid="pass"
           />
           <FormHelperText>{helperText}</FormHelperText>
           <div />
