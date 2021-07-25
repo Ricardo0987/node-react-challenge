@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 import Users, { User } from "../../db/schemas/user";
+import { sendError } from "../../utils/response_utils";
 
 export const createUser = async (
   req: Request,
