@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  api:
+    build: ./server
+    env_file:
+      - ./server/.env
+    environment:
+      - PORT=5000
+      - MONGO_URI=mongodb://db/db_001
+      - JWT_SECRET=a8s7da9sd7d79a8sd9adjasdja89sd
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    container_name: server
+
+  client:
+    build: ./client
+    ports:
+      - "80:80"
+    container_name: client
+
+  db:
+    image: mongo
+    ports:
+      - "27017:27017"
+    container_name: db

@@ -21,6 +21,7 @@ const Layout = () => {
       <Container>
         <Grid container className={classes.container}>
           <BrowserRouter>
+            <Route exact path="/" component={SignIn} />
             <Route exact path="/signin" component={SignIn} />
             <Route exact path="/signup" component={SignUp} />
             <Route exact path="/product-list" component={ProductList} />
