@@ -6,6 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
+import { reactLocalStorage } from "reactjs-localstorage";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,6 +24,7 @@ export default function Menu() {
   let history = useHistory();
 
   const goSigIn = () => {
+    reactLocalStorage.remove("token");
     history.push("/signin");
   };
 

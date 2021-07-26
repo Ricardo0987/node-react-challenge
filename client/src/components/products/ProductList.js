@@ -16,6 +16,8 @@ import { Edit, Delete } from "@material-ui/icons";
 import { CONFIG } from "../../config";
 import Container from "@material-ui/core/Container";
 import Menu from "../header/Menu";
+import Avatar from "@material-ui/core/Avatar";
+import { reactLocalStorage } from "reactjs-localstorage";
 
 const baseUrl = CONFIG.HOST + "/api/v1/products/";
 
@@ -45,6 +47,7 @@ function ProductList() {
   const [modalAdd, setModalAdd] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
   const [modalDelete, setModalDelete] = useState(false);
+  const [token] = useState(reactLocalStorage.get("token"));
 
   const [currentProduct, setCurrentProduct] = useState({
     name: "",
@@ -63,25 +66,54 @@ function ProductList() {
   };
 
   const getProducts = async () => {
-    await axios.get(baseUrl).then((response) => {
-      setData(response.data.data);
-    });
+    await axios
+      .get(
+        baseUrl,
+        token && {
+          headers: {
+            Authorization: token,
+          },
+        }
+      )
+      .then((response) => {
+        setData(response.data.data);
+      });
   };
 
   const createProduct = async () => {
-    await axios.post(baseUrl + "create", currentProduct).then((response) => {
-      setData(data.concat(response.data));
-      togglemodalAdd();
-    });
+    await axios
+      .post(
+        baseUrl + "create",
+
+        currentProduct,
+        token && {
+          headers: {
+            Authorization: token,
+          },
+        }
+      )
+      .then((response) => {
+        setData(data.concat(response.data));
+        togglemodalAdd();
+      });
   };
 
   const updateProduct = async () => {
     console.log(currentProduct);
     await axios
-      .put(baseUrl + currentProduct._id, currentProduct)
+      .put(
+        baseUrl + currentProduct._id,
+
+        currentProduct,
+        token && {
+          headers: {
+            Authorization: token,
+          },
+        }
+      )
       .then((response) => {
         var newData = data;
-        newData.map((product) => {
+        newData.forEach((product) => {
           if (currentProduct._id === product._id) {
             product.name = currentProduct.name;
             product.description = currentProduct.description;
@@ -89,16 +121,26 @@ function ProductList() {
             product.price = currentProduct.price;
           }
         });
+
         setData(newData);
         toggleModalEdit();
       });
   };
 
   const deleteProduct = async () => {
-    await axios.delete(baseUrl + currentProduct._id).then((response) => {
-      setData(data.filter((product) => product._id !== currentProduct._id));
-      toggleModalDelete();
-    });
+    await axios
+      .delete(
+        baseUrl + currentProduct._id,
+        token && {
+          headers: {
+            Authorization: token,
+          },
+        }
+      )
+      .then((response) => {
+        setData(data.filter((product) => product._id !== currentProduct._id));
+        toggleModalDelete();
+      });
   };
 
   const togglemodalAdd = () => {
@@ -119,10 +161,8 @@ function ProductList() {
   };
 
   useEffect(() => {
-    async function fetchData() {
-      await getProducts();
-    }
-    fetchData();
+    getProducts();
+    // eslint-disable-next-line
   }, []);
 
   const bodyCreate = (
@@ -258,7 +298,9 @@ function ProductList() {
               {data.map((product) => (
                 <TableRow key={product._id}>
                   <TableCell>{product.name}</TableCell>
-                  <TableCell>{product.image}</TableCell>
+                  <TableCell>
+                    <Avatar src={product.image} />
+                  </TableCell>
                   <TableCell>{product.description}</TableCell>
                   <TableCell>{product.price}</TableCell>
                   <TableCell>

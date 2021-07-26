@@ -141,6 +141,7 @@ export default function SignUp() {
                 fullWidth
                 label="E-mail"
                 name="email"
+                type="email"
                 onChange={handleInputChange}
               />
             </Grid>

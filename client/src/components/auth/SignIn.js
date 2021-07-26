@@ -13,6 +13,7 @@ import { useHistory } from "react-router-dom";
 import axios from "axios";
 import { CONFIG } from "../../config";
 import Spinner from "../misc/Spinner";
+import { reactLocalStorage } from "reactjs-localstorage";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -43,7 +44,7 @@ export default function SignIn() {
   const [isPendingData, setPendingData] = useState(false);
 
   const [data, setData] = useState({
-    user: "",
+    email: "",
     password: "",
   });
   const [token, setToken] = useState();
@@ -53,7 +54,7 @@ export default function SignIn() {
 
   const handlerSubmitButton = (e) => {
     e.preventDefault();
-    if (!data.user.trim() || !data.password.trim()) {
+    if (!data.email.trim() || !data.password.trim()) {
       setError(true);
       setHelperText("This field can not empty");
     } else {
@@ -62,7 +63,7 @@ export default function SignIn() {
         .post(
           CONFIG.HOST + "/api/v1/users/login",
           {
-            email: data.user,
+            email: data.email,
             password: data.password,
           },
           token && {
@@ -73,6 +74,7 @@ export default function SignIn() {
         )
         .then(function (response) {
           setToken(response.data.token);
+          reactLocalStorage.set("token", response.data.token);
           history.push("/product-list");
         })
         .catch(function (error) {
@@ -122,8 +124,9 @@ export default function SignIn() {
             margin="normal"
             required
             fullWidth
-            label="User"
-            name="user"
+            label="E-mail"
+            name="email"
+            type="email"
             autoFocus
           />
           <TextField
